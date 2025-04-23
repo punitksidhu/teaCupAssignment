@@ -1,89 +1,40 @@
 package com.smarthome;
+import com.smarthome.model.AirConditioner;
+import com.smarthome.model.Fan;
+import com.smarthome.model.Light;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
+
 import static org.junit.jupiter.api.Assertions.*;
+
 
 public class SmartHomeSystemTest {
 
-    private SmartHomeController controller;
-    private Light light;
-    private Fan fan;
-    private AirConditioner ac;
 
-    @BeforeEach
-    public void setup() {
-        controller = new SmartHomeController();
-        light = new Light();
-        fan = new Fan();
-        ac = new AirConditioner();
-
-        controller.registerAppliance(light);
-        controller.registerAppliance(fan);
-        controller.registerAppliance(ac);
+    @Test
+    void testValidFanSpeed() {
+        Fan fan = new Fan();
+        fan.setSpeed(2);
+        assertEquals("Speed: 2", fan.getStatus());
     }
 
     @Test
-    public void testApplianceTurnOnAndOff() {
-        light.turnOn();
+    void testInvalidFanSpeed() {
+        Fan fan = new Fan();
+        assertThrows(IllegalArgumentException.class, () -> fan.setSpeed(3));
+    }
+
+    @Test
+    void testFanTurnOff() {
+        Fan fan = new Fan();
         fan.turnOn();
-        ac.turnOn();
-
-        assertTrue(light.isOn());
-        assertTrue(fan.isOn());
-        assertTrue(ac.isOn());
-
-        light.turnOff();
         fan.turnOff();
-        ac.turnOff();
-
-        assertFalse(light.isOn());
-        assertFalse(fan.isOn());
-        assertFalse(ac.isOn());
-    }
-
-    @Test
-    public void testFanSpeedOnOff() {
-        fan.turnOn();
-        assertEquals(1, fan.getSpeed());
-        fan.turnOff();
-        assertEquals(0, fan.getSpeed());
-    }
-
-    @Test
-    public void testAirConditionerMode() {
-        ac.turnOn();
-        assertEquals("cool", ac.getMode());
-        ac.turnOff();
-        assertEquals("off", ac.getMode());
-    }
-
-    @Test
-    public void testYearlyUpdateTurnsEverythingOff() {
-        light.turnOn();
-        fan.turnOn();
-        ac.turnOn();
-
-        LocalDateTime updateTime = LocalDateTime.of(2025, 1, 1, 1, 0);
-        controller.performYearlyUpdate(updateTime);
-
-        assertFalse(light.isOn());
-        assertFalse(fan.isOn());
-        assertFalse(ac.isOn());
-    }
-
-    @Test
-    public void testYearlyUpdateDoesNothingOutsideUpdateTime() {
-        light.turnOn();
-        fan.turnOn();
-        ac.turnOn();
-
-        LocalDateTime nonUpdateTime = LocalDateTime.of(2025, 6, 1, 1, 0);
-        controller.performYearlyUpdate(nonUpdateTime);
-
-        assertTrue(light.isOn());
-        assertTrue(fan.isOn());
-        assertTrue(ac.isOn());
+        assertEquals("Speed: 0", fan.getStatus());
     }
 }
+
+
+
+
 

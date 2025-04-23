@@ -1,5 +1,7 @@
 package com.smarthome;
 
+import com.smarthome.model.Appliance;
+
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.ArrayList;
